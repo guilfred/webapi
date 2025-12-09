@@ -1,4 +1,3 @@
-import { ROLE } from '#models/user'
 import { BaseSchema } from '@adonisjs/lucid/schema'
 
 export default class extends BaseSchema {
@@ -11,21 +10,12 @@ export default class extends BaseSchema {
       table.string('password').notNullable()
       table.boolean('is_enabled').notNullable()
       table.timestamp('last_login_at').nullable()
-      table
-        .enu('role', Object.values(ROLE), {
-          useNative: true,
-          enumName: 'user_role',
-          existingType: false,
-        })
-        .notNullable()
-
       table.timestamp('created_at').notNullable()
       table.timestamp('updated_at').nullable()
     })
   }
 
   async down() {
-    this.schema.raw('DROP TYPE IF EXISTS "user_role"')
     this.schema.dropTable(this.tableName)
   }
 }

@@ -13,7 +13,7 @@ export default class extends BaseSchema {
       table.string('address').notNullable()
       table.string('phone').notNullable()
       table.string('website').notNullable()
-      table.string('codePostal').notNullable()
+      table.string('code_postal').notNullable()
       table.string('num_immatriculation').nullable()
       table.integer('user_id').references('id').inTable('users').onDelete('CASCADE')
       table

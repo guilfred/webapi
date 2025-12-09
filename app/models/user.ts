@@ -1,8 +1,8 @@
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { compose } from '@adonisjs/core/helpers'
 import hash from '@adonisjs/core/services/hash'
-import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
-import type { BelongsTo } from '@adonisjs/lucid/types/relations'
+import { BaseModel, column, hasOne } from '@adonisjs/lucid/orm'
+import type { HasOne } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
 import Profile from './profile.js'
 
@@ -10,13 +10,6 @@ const AuthFinder = withAuthFinder(() => hash.use('argon'), {
   uids: ['email'],
   passwordColumnName: 'password',
 })
-
-export enum ROLE {
-  SUPER_ADMIN = 'ROLE_SUPER_ADMIN',
-  ADMIN = 'ROLE_ADMIN',
-  INETRVENANT = 'ROLE_INTERVENANT',
-  CLIENT = 'ROLE_CLIENT',
-}
 
 export default class User extends compose(BaseModel, AuthFinder) {
   @column({ isPrimary: true })
@@ -34,19 +27,16 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
-  @column({ serializeAs: null })
-  declare role: ROLE
-
   @column({ columnName: 'is_enabled' })
   declare isEnabled: boolean
 
   @column({ columnName: 'last_login_at' })
   declare lastLoginAt: DateTime | null // date de la dernière connexion
 
-  @belongsTo(() => Profile, {
-    foreignKey: 'userID',
+  @hasOne(() => Profile, {
+    foreignKey: 'userID', // Cette clé existe sur Profile
   })
-  declare profile: BelongsTo<typeof Profile>
+  declare profile: HasOne<typeof Profile>
 
   constructor() {
     super()

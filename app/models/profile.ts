@@ -1,5 +1,5 @@
-import { BaseModel, belongsTo, column, hasMany, hasOne } from '@adonisjs/lucid/orm'
-import type { BelongsTo, HasMany, HasOne } from '@adonisjs/lucid/types/relations'
+import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
+import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
 import ProfileCategory from './profile_category.js'
 import Project from './project.js'
 import User from './user.js'
@@ -52,10 +52,11 @@ export default class Profile extends BaseModel {
   })
   declare projects: HasMany<typeof Project>
 
-  @hasOne(() => User, {
-    foreignKey: 'userID',
+  // ✅ Profile BELONGS TO User (Profile possède user_id)
+  @belongsTo(() => User, {
+    foreignKey: 'userID', // Cette clé existe sur Profile (user_id)
   })
-  declare user: HasOne<typeof User>
+  declare user: BelongsTo<typeof User>
 
   getFullName() {
     return `${this.name} ${this.firstname}`
