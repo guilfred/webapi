@@ -4,7 +4,7 @@ import hash from '@adonisjs/core/services/hash'
 import { BaseModel, belongsTo, column } from '@adonisjs/lucid/orm'
 import type { BelongsTo } from '@adonisjs/lucid/types/relations'
 import { DateTime } from 'luxon'
-import Client from './client.js'
+import Profile from './profile.js'
 
 const AuthFinder = withAuthFinder(() => hash.use('argon'), {
   uids: ['email'],
@@ -14,6 +14,7 @@ const AuthFinder = withAuthFinder(() => hash.use('argon'), {
 export enum ROLE {
   SUPER_ADMIN = 'ROLE_SUPER_ADMIN',
   ADMIN = 'ROLE_ADMIN',
+  INETRVENANT = 'ROLE_INTERVENANT',
   CLIENT = 'ROLE_CLIENT',
 }
 
@@ -39,16 +40,16 @@ export default class User extends compose(BaseModel, AuthFinder) {
   @column({ columnName: 'is_enabled' })
   declare isEnabled: boolean
 
-  @column()
-  declare lastLoginAt: DateTime | null
+  @column({ columnName: 'last_login_at' })
+  declare lastLoginAt: DateTime | null // date de la dernière connexion
 
-  @belongsTo(() => Client, {
+  @belongsTo(() => Profile, {
     foreignKey: 'userID',
   })
-  declare client: BelongsTo<typeof Client>
+  declare profile: BelongsTo<typeof Profile>
 
   constructor() {
     super()
-    this.isEnabled = true
+    this.isEnabled = true // active le compte par défaut
   }
 }

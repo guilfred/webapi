@@ -45,6 +45,9 @@ export default class Ticket extends BaseModel {
   @column.dateTime({ autoCreate: true, autoUpdate: true })
   declare updatedAt: DateTime | null
 
+  @column.dateTime()
+  declare endAt: DateTime | null
+
   @column()
   declare priority: PRIORITY
 

@@ -1,6 +1,6 @@
 import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
-import Client from './client.js'
+import Profile from './profile.js'
 import Ticket from './ticket.js'
 
 export default class Project extends BaseModel {
@@ -18,12 +18,12 @@ export default class Project extends BaseModel {
   })
   declare tickets: HasMany<typeof Ticket>
 
-  @column({ columnName: 'client_id' })
-  declare clientID: number
+  @column({ columnName: 'profile_id' })
+  declare profileID: number
 
-  @belongsTo(() => Client, {
-    foreignKey: 'clientID',
+  @belongsTo(() => Profile, {
+    foreignKey: 'profileID',
     localKey: 'id',
   })
-  declare client: BelongsTo<typeof Client>
+  declare profile: BelongsTo<typeof Profile>
 }

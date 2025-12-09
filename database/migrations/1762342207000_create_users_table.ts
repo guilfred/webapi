@@ -10,7 +10,7 @@ export default class extends BaseSchema {
       table.string('email').notNullable().unique()
       table.string('password').notNullable()
       table.boolean('is_enabled').notNullable()
-      table.timestamp('lastLoginAt').nullable()
+      table.timestamp('last_login_at').nullable()
       table
         .enu('role', Object.values(ROLE), {
           useNative: true,

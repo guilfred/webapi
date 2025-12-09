@@ -8,12 +8,15 @@
 */
 
 import router from '@adonisjs/core/services/router'
+import { middleware } from './kernel.js'
 import { UserRoutes } from './user/routes.js'
 
-router.get('/', async () => {
-  return {
-    hello: 'world',
-  }
-})
+router
+  .get('/', async () => {
+    return {
+      hello: 'world',
+    }
+  })
+  .middleware(middleware.userLocation())
 
 UserRoutes()
