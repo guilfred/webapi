@@ -1,3 +1,4 @@
+import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { compose } from '@adonisjs/core/helpers'
 import hash from '@adonisjs/core/services/hash'
@@ -12,6 +13,14 @@ const AuthFinder = withAuthFinder(() => hash.use('argon'), {
 })
 
 export default class User extends compose(BaseModel, AuthFinder) {
+  // ce fournisseur permet de créer, lister et vérifier les jetons d'accès
+  static accessTokens = DbAccessTokensProvider.forModel(User, {
+    expiresIn: '1 day',
+    prefix: 'oat_',
+    table: 'auth_access_tokens',
+    type: 'auth_token',
+    tokenSecretLength: 40,
+  })
   @column({ isPrimary: true })
   declare id: number
 

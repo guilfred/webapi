@@ -35,7 +35,7 @@ export default class UserController {
       profileCategoryID: profile.categoryID,
     })
 
-    await newAccount.related('profile').associate(newProfile)
+    //await newAccount.related('profile').associate(newProfile)
 
     return response.status(201).json(newAccount)
   }
