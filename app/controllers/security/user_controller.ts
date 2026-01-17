@@ -1,8 +1,9 @@
 import User from '#models/user'
 import { PROFILE_TYPE } from '#utils/utils_types'
-import { createUserValidator, getUserValidator, showUserValidator } from '#validators/user_validators'
+import { createUserValidator, getUserValidator, showUserValidator, updateUserPasswordValidator } from '#validators/user_validators'
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
+import hash from '@adonisjs/core/services/hash'
 import { UserDto } from '../../dtos/user_dto.js'
 
 @inject()
@@ -133,8 +134,23 @@ export default class UserController {
     return response.status(200).json(this.presenter.toJSON(account))
   }
 
-  // modification d'un compte
-  // modification du mot de passe 
-  // mot de passe perdu 
+  async updatePassword({ request, response, auth }: HttpContext) {
+    const user = auth.user
+    if (!user) {
+      return response.status(401).send('Requires authentication')
+    }
+    const {password, newPassword} = await request.validateUsing(updateUserPasswordValidator)
+    if (!hash.verify(user.password, password)) {
+      return response.badRequest({message: "Le mot de passe actuelle n'est pas valide !"})
+    }
+    await user.merge({password: newPassword}).save()
+
+    return response.status(200).json({message: "Mot de passe mis à jour avec succès !"})
+  } 
+
   
+
+  // modification d'un compte
+  // mot de passe perdu 
+
 }

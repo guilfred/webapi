@@ -10,6 +10,7 @@ export const UserRoutes = () => {
       router.get('', [UserController, 'listeAccount'])
       router.get('/:id', [UserController, 'getAccount'])
       router.put('/update_able_account/:id', [UserController, 'updateAbleAccount'])
+      router.post('/update_password', [UserController, 'updatePassword'])
     })
     .prefix('/api/users')
     .middleware(middleware.auth())

@@ -36,3 +36,11 @@ export const getUserValidator = vine.compile(
     }),
   })
 )
+
+
+export const updateUserPasswordValidator = vine.compile(
+  vine.object({
+    password: vine.string().trim(),
+    newPassword: vine.string().trim(),
+  })
+)
