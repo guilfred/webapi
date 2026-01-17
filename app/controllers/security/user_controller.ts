@@ -1,6 +1,6 @@
 import User from '#models/user'
 import { PROFILE_TYPE } from '#utils/utils_types'
-import { createUserValidator, getUserValidator, showUserValidator, updateUserPasswordValidator } from '#validators/user_validators'
+import { createUserValidator, getUserValidator, showUserValidator, updateUserPasswordValidator, updateUserProfileValidator } from '#validators/user_validators'
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 import hash from '@adonisjs/core/services/hash'
@@ -128,12 +128,13 @@ export default class UserController {
     account.isEnabled = !account.isEnabled
     await account.save()
     await account.load('profile', (profileQuery) => {
-      profileQuery.preload('profileCategory')
+      return profileQuery.preload('profileCategory')
     })
 
     return response.status(200).json(this.presenter.toJSON(account))
   }
 
+  // Modification du mot du compte connecté
   async updatePassword({ request, response, auth }: HttpContext) {
     const user = auth.user
     if (!user) {
@@ -147,10 +148,41 @@ export default class UserController {
 
     return response.status(200).json({message: "Mot de passe mis à jour avec succès !"})
   } 
+ 
+  // Modification des informations du profile
+  async updateProfile({request, response, auth}: HttpContext) {
+    const user = auth.user
+    if (!user) {
+      return response.status(401).send('Requires authentication')
+    }
+    const {
+      name,
+      firstname,
+      rs,
+      numImmatriculation, 
+      phone, 
+      website, 
+      description,
+      address,
+      codePostal
+    } = await request.validateUsing(updateUserProfileValidator)
+    await user.load('profile', (profileQuery) => {
+      profileQuery.preload('profileCategory')
+   })
+    await user.profile.merge({
+      name,
+      firstname,
+      rs,
+      numImmatriculation, 
+      phone, 
+      website, 
+      description,
+      address,
+      codePostal
+    }).save()    
 
+    return response.status(200).json(this.presenter.toJSON(user))
+  }
   
-
-  // modification d'un compte
-  // mot de passe perdu 
 
 }

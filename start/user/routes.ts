@@ -11,6 +11,7 @@ export const UserRoutes = () => {
       router.get('/:id', [UserController, 'getAccount'])
       router.put('/update_able_account/:id', [UserController, 'updateAbleAccount'])
       router.post('/update_password', [UserController, 'updatePassword'])
+      router.post('update_profiles', [UserController, 'updateProfile'])
     })
     .prefix('/api/users')
     .middleware(middleware.auth())
