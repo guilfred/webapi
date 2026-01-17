@@ -11,3 +11,5 @@ export enum PROFILE_TITLE {
   ADMIN = 'Administrateur',
   SUPER_ADMIN = 'Super Administrateur',
 }
+
+export type PROFILE_ADMIN_CATEGORY = 'super_admin' | 'admin'

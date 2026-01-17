@@ -10,7 +10,7 @@ type PROFILE = {
 
 export default class ProfileSeeder extends BaseSeeder {
   async run() {
-    const profiles: PROFILE[] = [
+    await ProfileCategory.createMany([
       {
         title: PROFILE_TITLE.SUPER_ADMIN,
         type: PROFILE_TYPE.SUPER_ADMIN,
@@ -33,14 +33,9 @@ export default class ProfileSeeder extends BaseSeeder {
         type: PROFILE_TYPE.CLIENT,
         description: 'Compte client de la plateforme ayant la possibilité de créer des tickets ',
       },
-    ]
+    ])
 
-    for (const profile of profiles) {
-      await ProfileCategory.create({
-        title: profile.title as PROFILE_TITLE,
-        type: profile.type as PROFILE_TYPE,
-        description: profile.description,
-      })
-    }
   }
+
+  
 }

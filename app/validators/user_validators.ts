@@ -20,3 +20,19 @@ export const createUserValidator = vine.compile(
     }),
   })
 )
+
+export const showUserValidator = vine.compile(
+  vine.object({
+    params: vine.object({
+      id: vine.number().withoutDecimals().positive(),
+    }),
+  })
+)
+
+export const getUserValidator = vine.compile(
+  vine.object({
+    params: vine.object({
+      id: vine.number().withoutDecimals().positive(),
+    }),
+  })
+)
