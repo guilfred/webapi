@@ -18,6 +18,7 @@ export default class Project extends BaseModel {
   })
   declare tickets: HasMany<typeof Ticket>
 
+  
   @column({ columnName: 'profile_id' })
   declare profileID: number
 
@@ -25,5 +26,5 @@ export default class Project extends BaseModel {
     foreignKey: 'profileID',
     localKey: 'id',
   })
-  declare profile: BelongsTo<typeof Profile>
+  declare profileOwner: BelongsTo<typeof Profile>
 }

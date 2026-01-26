@@ -61,4 +61,8 @@ export default class User extends compose(BaseModel, AuthFinder) {
   get isSuperAdmin(): boolean {
     return this.profile?.profileCategory?.type === PROFILE_TYPE.SUPER_ADMIN
   }
+
+  get isLamba(): boolean {
+    return this.profile?.profileCategory?.type === PROFILE_TYPE.CLIENT
+  }
 }

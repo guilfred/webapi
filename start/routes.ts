@@ -10,6 +10,7 @@
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import { ProfilesCategoriesRoutes } from './profile/routes.js'
+import { ProjectRoutes } from './project/routes.js'
 import { SecurityRoutes } from './security/routes.js'
 import { UserRoutes } from './user/routes.js'
 
@@ -25,3 +26,4 @@ router
 UserRoutes()
 ProfilesCategoriesRoutes()
 SecurityRoutes()
+ProjectRoutes()

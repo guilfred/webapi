@@ -7,18 +7,10 @@ export class ProjectDto {
       id: project.id,
       title: project.title,
       description: project.description,
-      client: project.client
+      profile: project.profileOwner
         ? {
-            id: project.client.id,
-            fullName: project.client.fullName,
-            rs: project.client.rs,
-            description: project.client.description,
-            address: project.client.address || null,
-            phone: project.client.phone || null,
-            email: project.client.email || null,
-            website: project.client.website || null,
-            codePostal: project.client.codePostal || null,
-            numImmatriculation: project.client.numImmatriculation || null,
+            fullName: project.profileOwner.getFullName(),
+            rs: project.profileOwner.rs,
           }
         : null,
       tickets: project.tickets
