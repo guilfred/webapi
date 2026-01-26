@@ -1,0 +1,50 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - run: npm ci
+
+      - name: Setup environment
+        run: |
+          cp .env.test .env
+          # Remplacer les credentials locales par celles du CI
+          sed -i 's/DB_HOST=.*/DB_HOST=localhost/' .env
+          sed -i 's/DB_USER=.*/DB_USER=postgres/' .env
+          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=postgres/' .env
+          sed -i 's/DB_DATABASE=.*/DB_DATABASE=test_db/' .env
+
+      - name: Run migrations
+        run: node ace migration:run --force
+
+      - name: Run seeders
+        run: node ace db:seed  
+
+      - name: Run tests
+        run: npm test
