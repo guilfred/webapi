@@ -1,0 +1,68 @@
+name: Tests
+
+on: [push, pull_request]
+
+jobs:
+  unit-tests:  # ← Job pour tests unitaires
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: cp .env.example .env
+      - run: echo "APP_KEY=$(node ace generate:key --show)" >> .env
+      
+      - name: Run unit tests
+        run: npm run test:unit
+
+  functional-tests:  # ← Job pour tests fonctionnels
+    runs-on: ubuntu-latest
+    
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: test_db
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - run: npm ci
+      - run: cp .env.example .env
+      - run: echo "APP_KEY=$(node ace generate:key --show)" >> .env
+      
+      - name: Run migrations
+        run: node ace migration:run --force
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_DATABASE: test_db
+          NODE_ENV: test
+      
+      - name: Run functional tests
+        run: npm run test:functional
+        env:
+          DB_HOST: localhost
+          DB_PORT: 5432
+          DB_USER: postgres
+          DB_PASSWORD: postgres
+          DB_DATABASE: test_db
+          NODE_ENV: test
