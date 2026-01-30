@@ -2,7 +2,7 @@ import ProfileCategory from '#models/profile_category'
 import { getProfileValidator } from '#validators/profile_validator'
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
-import { ProfileCategoryDto } from '../../dtos/profile_category_dto.js'
+import { ProfileCategoryDto } from '../dtos/profile_category_dto.js'
 
 @inject()
 export default class ProfileCategoryController {
@@ -28,7 +28,7 @@ export default class ProfileCategoryController {
     return response.status(200).json(responseData)
   }
 
-  // Récupère la une catégorie de profile
+  // Récupère  une catégorie de profile
   async getProfileCategory({ auth, bouncer, request, response }: HttpContext) {
     const user = auth.user
     if (!user) {

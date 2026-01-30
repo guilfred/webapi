@@ -10,9 +10,9 @@ jobs:
       postgres:
         image: postgres:16-alpine
         env:
-          POSTGRES_DB: test_db
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: sav
+          POSTGRES_USER: william
+          POSTGRES_PASSWORD: P@ssw0rd
         ports:
           - 5432:5432
         options: >-
@@ -36,9 +36,9 @@ jobs:
           cp .env.test .env
           # Remplacer les credentials locales par celles du CI
           sed -i 's/DB_HOST=.*/DB_HOST=localhost/' .env
-          sed -i 's/DB_USER=.*/DB_USER=postgres/' .env
-          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=postgres/' .env
-          sed -i 's/DB_DATABASE=.*/DB_DATABASE=test_db/' .env
+          sed -i 's/DB_USER=.*/DB_USER=william/' .env
+          sed -i 's/DB_PASSWORD=.*/DB_PASSWORD=P@ssw0rd/' .env
+          sed -i 's/DB_DATABASE=.*/DB_DATABASE=sav/' .env
 
       - name: Run migrations
         run: node ace migration:run --force

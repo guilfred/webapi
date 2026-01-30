@@ -1,7 +1,7 @@
 import { middleware } from '#start/kernel'
 import router from '@adonisjs/core/services/router'
 
-const ProfileCategoryController = () => import('#controllers/security/profile_category_controller')
+const ProfileCategoryController = () => import('#controllers/profile_category_controller')
 
 export const ProfilesCategoriesRoutes = () => {
   router

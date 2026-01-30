@@ -56,7 +56,7 @@ export default class ProjectController {
       profileQuery.preload('profileCategory')
     })
     if (await bouncer.with('ProjectPolicy').denies('edit')) {
-      return response.forbidden({message: 'Authorization denied to list projects'})
+      return response.forbidden({message: 'Authorization denied to edit this project'})
     }
     const {params} = await request.validateUsing(getProjectByIDValidator)
     const project = await Project.findOrFail(params.id)
