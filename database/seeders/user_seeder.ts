@@ -20,14 +20,13 @@ type PROFILE = {
   numImmatriculation: string
 }
 
-type INFO_USER = {
-  user: USER,
+type InfoUser = {
+  user: USER
   profile: PROFILE
 }
 export default class UserSeeder extends BaseSeeder {
   async run() {
-
-    const dataInfos: INFO_USER[] = [
+    const dataInfos: InfoUser[] = [
       {
         user: {
           email: 'shawn@gmail.com',
@@ -45,7 +44,7 @@ export default class UserSeeder extends BaseSeeder {
           numImmatriculation: '1234567890',
           //profileCategoryID: 1,
           //userID: user.id,
-        }
+        },
       },
       {
         user: {
@@ -64,7 +63,7 @@ export default class UserSeeder extends BaseSeeder {
           numImmatriculation: '123456722',
           //profileCategoryID: 1,
           //userID: user.id,
-        }
+        },
       },
       {
         user: {
@@ -83,7 +82,7 @@ export default class UserSeeder extends BaseSeeder {
           numImmatriculation: '1234567890',
           //profileCategoryID: 1,
           //userID: user.id,
-        }
+        },
       },
       {
         user: {
@@ -102,8 +101,8 @@ export default class UserSeeder extends BaseSeeder {
           numImmatriculation: '1234567890',
           //profileCategoryID: 1,
           //userID: user.id,
-        }
-      }
+        },
+      },
     ]
 
     await db.transaction(async (trx) => {
@@ -115,7 +114,7 @@ export default class UserSeeder extends BaseSeeder {
           },
           { client: trx }
         )
-    
+
         await Profile.create(
           {
             ...v.profile,
@@ -126,7 +125,5 @@ export default class UserSeeder extends BaseSeeder {
         )
       }
     })
-    
-      
   }
 }

@@ -14,7 +14,9 @@ export default class AuthController {
 
     const user = await User.verifyCredentials(username, password)
     if (!user.isEnabled) {
-      return response.status(401).json({message: "Authentication failed! Your account is disabled."})
+      return response
+        .status(401)
+        .json({ message: 'Authentication failed! Your account is disabled.' })
     }
     await auth.use('web').login(user)
 

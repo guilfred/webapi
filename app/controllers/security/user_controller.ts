@@ -1,6 +1,12 @@
 import User from '#models/user'
 import { PROFILE_TYPE } from '#utils/utils_types'
-import { createUserValidator, getUserValidator, showUserValidator, updateUserPasswordValidator, updateUserProfileValidator } from '#validators/user_validators'
+import {
+  createUserValidator,
+  getUserValidator,
+  showUserValidator,
+  updateUserPasswordValidator,
+  updateUserProfileValidator,
+} from '#validators/user_validators'
 import { inject } from '@adonisjs/core'
 import { HttpContext } from '@adonisjs/core/http'
 import hash from '@adonisjs/core/services/hash'
@@ -22,7 +28,7 @@ export default class UserController {
 
     // Peut créer un compte que si on est Admin ou Super Admin
     if (await bouncer.with('UserPolicy').denies('create')) {
-      return response.forbidden({message: 'Authorization denied to create a user'})
+      return response.forbidden({ message: 'Authorization denied to create a user' })
     }
 
     const { user: account, profile } = await request.validateUsing(createUserValidator)
@@ -41,11 +47,10 @@ export default class UserController {
       numImmatriculation: profile.numImmatriculation || null,
       profileCategoryID: profile.categoryID,
     })
-    
+
     await newAccount.load('profile', (profileQuery) => {
       profileQuery.preload('profileCategory')
     })
-
 
     return response.status(201).json(this.presenter.toJSON(newAccount))
   }
@@ -56,20 +61,18 @@ export default class UserController {
     if (!user) {
       return response.status(401).send('Requires authentication')
     }
-      await user.load('profile', (profileQuery) => {
-        profileQuery.preload('profileCategory')
-      })
-    
+    await user.load('profile', (profileQuery) => {
+      profileQuery.preload('profileCategory')
+    })
 
     // Peut créer un compte que si on est Admin ou Super Admin
     if (await bouncer.with('UserPolicy').denies('liste')) {
-      return response.forbidden({message: 'Authorization denied to list users'})
+      return response.forbidden({ message: 'Authorization denied to list users' })
     }
 
     const users =
       user.profile.profileCategory.type === PROFILE_TYPE.SUPER_ADMIN
-        ? await User.query()
-          .preload('profile', (profileQuery) => {
+        ? await User.query().preload('profile', (profileQuery) => {
             profileQuery.preload('profileCategory')
           })
         : await User.query()
@@ -82,7 +85,7 @@ export default class UserController {
               profileQuery.preload('profileCategory')
             })
 
-    return users.map((user: User) => this.presenter.toJSON(user))
+    return users.map((account: User) => this.presenter.toJSON(account))
   }
 
   // Récupérer un compte user
@@ -97,7 +100,7 @@ export default class UserController {
 
     // Peut créer un compte que si on est Admin ou Super Admin
     if (await bouncer.with('UserPolicy').denies('show')) {
-      return response.forbidden({message: 'Authorization denied to view user'})
+      return response.forbidden({ message: 'Authorization denied to view user' })
     }
 
     const { params } = await request.validateUsing(showUserValidator)
@@ -120,9 +123,9 @@ export default class UserController {
     })
 
     if (await bouncer.with('UserPolicy').denies('updateAccount')) {
-      return response.forbidden({message: 'Authorization denied to update account'})
+      return response.forbidden({ message: 'Authorization denied to update account' })
     }
-    
+
     const { params } = await request.validateUsing(getUserValidator)
     const account = await User.findOrFail(params.id)
     account.isEnabled = !account.isEnabled
@@ -140,17 +143,17 @@ export default class UserController {
     if (!user) {
       return response.status(401).send('Requires authentication')
     }
-    const {password, newPassword} = await request.validateUsing(updateUserPasswordValidator)
+    const { password, newPassword } = await request.validateUsing(updateUserPasswordValidator)
     if (!hash.verify(user.password, password)) {
-      return response.badRequest({message: "Le mot de passe actuelle n'est pas valide !"})
+      return response.badRequest({ message: "Le mot de passe actuelle n'est pas valide !" })
     }
-    await user.merge({password: newPassword}).save()
+    await user.merge({ password: newPassword }).save()
 
-    return response.status(200).json({message: "Mot de passe mis à jour avec succès !"})
-  } 
- 
+    return response.status(200).json({ message: 'Mot de passe mis à jour avec succès !' })
+  }
+
   // Modification des informations du profile
-  async updateProfile({request, response, auth}: HttpContext) {
+  async updateProfile({ request, response, auth }: HttpContext) {
     const user = auth.user
     if (!user) {
       return response.status(401).send('Requires authentication')
@@ -159,30 +162,30 @@ export default class UserController {
       name,
       firstname,
       rs,
-      numImmatriculation, 
-      phone, 
-      website, 
+      numImmatriculation,
+      phone,
+      website,
       description,
       address,
-      codePostal
+      codePostal,
     } = await request.validateUsing(updateUserProfileValidator)
     await user.load('profile', (profileQuery) => {
       profileQuery.preload('profileCategory')
-   })
-    await user.profile.merge({
-      name,
-      firstname,
-      rs,
-      numImmatriculation, 
-      phone, 
-      website, 
-      description,
-      address,
-      codePostal
-    }).save()    
+    })
+    await user.profile
+      .merge({
+        name,
+        firstname,
+        rs,
+        numImmatriculation,
+        phone,
+        website,
+        description,
+        address,
+        codePostal,
+      })
+      .save()
 
     return response.status(200).json(this.presenter.toJSON(user))
   }
-  
-
 }
