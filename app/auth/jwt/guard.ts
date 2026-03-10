@@ -1,3 +1,4 @@
+import { EXPIRES_IN } from '#utils/utils_types'
 import { errors, symbols } from '@adonisjs/auth'
 import { AuthClientResponse, GuardContract } from '@adonisjs/auth/types'
 import type { HttpContext } from '@adonisjs/core/http'
@@ -55,7 +56,7 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
    */
   async generate(user: UserProvider[typeof symbols.PROVIDER_REAL_USER]) {
     const providerUser = await this.#userProvider.createUserForGuard(user)
-    const expiresIn = this.#options.expiresIn ?? '1h' // Par défaut 1 heure
+    const expiresIn = this.#options.expiresIn ?? EXPIRES_IN // Par défaut 1 heure
     const token = jwt.sign({ userId: providerUser.getId() }, this.#options.secret, {
       expiresIn: expiresIn as SignOptions['expiresIn'],
     })
@@ -64,7 +65,7 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
       type: 'bearer',
       token: token,
       // ajoute le délai d'expiration du token
-      expiresIn: this.#options.expiresIn ?? '1h',
+      expiresIn: this.#options.expiresIn ?? EXPIRES_IN,
     }
   }
 
@@ -106,9 +107,22 @@ export class JwtGuard<UserProvider extends JwtUserProviderContract<unknown>>
     /**
      * Verify token
      */
-    const payload = jwt.verify(token, this.#options.secret)
-    if (typeof payload !== 'object' || !('userId' in payload)) {
-      throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
+    let payload: jwt.JwtPayload
+    try {
+      const verified = jwt.verify(token, this.#options.secret)
+      if (typeof verified !== 'object' || !('userId' in verified)) {
+        throw new errors.E_UNAUTHORIZED_ACCESS('Unauthorized access', {
+          guardDriverName: this.driverName,
+        })
+      }
+      payload = verified
+    } catch (err) {
+      if (err instanceof jwt.TokenExpiredError) {
+        throw new errors.E_UNAUTHORIZED_ACCESS('Token expired', {
+          guardDriverName: this.driverName,
+        })
+      }
+      throw new errors.E_UNAUTHORIZED_ACCESS('Invalid token', {
         guardDriverName: this.driverName,
       })
     }

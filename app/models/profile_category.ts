@@ -1,4 +1,4 @@
-import { PROFILE_TITLE, PROFILE_TYPE } from '#utils/utils_types'
+import { ProfileTitle, ProfileType } from '#utils/utils_types'
 import { BaseModel, column, hasMany } from '@adonisjs/lucid/orm'
 import type { HasMany } from '@adonisjs/lucid/types/relations'
 import Profile from './profile.js'
@@ -8,10 +8,10 @@ export default class ProfileCategory extends BaseModel {
   declare id: number
 
   @column()
-  declare title: PROFILE_TITLE
+  declare title: ProfileTitle
 
   @column()
-  declare type: PROFILE_TYPE
+  declare type: ProfileType
 
   @column()
   declare description: string

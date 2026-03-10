@@ -7,7 +7,6 @@
 |
 */
 
-import User from '#models/user'
 import router from '@adonisjs/core/services/router'
 import { middleware } from './kernel.js'
 import { ProfilesCategoriesRoutes } from './profile/routes.js'
@@ -22,13 +21,6 @@ router
     }
   })
   .middleware(middleware.userLocation())
-
-router.post('/login', async ({ request, auth }) => {
-  const { email, password } = request.all()
-  const user = await User.verifyCredentials(email, password)
-
-  return await auth.use('jwt').generate(user)
-})
 
 // Routes importées
 UserRoutes()

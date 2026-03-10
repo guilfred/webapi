@@ -1,4 +1,5 @@
 import env from '#start/env'
+import { EXPIRES_IN } from '#utils/utils_types'
 import { defineConfig } from '@adonisjs/auth'
 import { sessionGuard, sessionUserProvider } from '@adonisjs/auth/session'
 import type { Authenticators, InferAuthEvents } from '@adonisjs/auth/types'
@@ -6,7 +7,7 @@ import { JwtGuard } from '../app/auth/jwt/guard.js'
 
 const jwtConfig = {
   secret: env.get('APP_KEY'),
-  expiresIn: '1h',
+  expiresIn: EXPIRES_IN,
 }
 const userProvider = sessionUserProvider({
   model: () => import('#models/user'),

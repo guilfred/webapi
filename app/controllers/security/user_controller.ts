@@ -1,5 +1,5 @@
 import User from '#models/user'
-import { PROFILE_TYPE } from '#utils/utils_types'
+import { ProfileType } from '#utils/utils_types'
 import {
   createUserValidator,
   getUserValidator,
@@ -71,14 +71,14 @@ export default class UserController {
     }
 
     const users =
-      user.profile.profileCategory.type === PROFILE_TYPE.SUPER_ADMIN
+      user.profile.profileCategory.type === ProfileType.SUPER_ADMIN
         ? await User.query().preload('profile', (profileQuery) => {
             profileQuery.preload('profileCategory')
           })
         : await User.query()
             .whereHas('profile', (profileQuery) => {
               profileQuery.whereHas('profileCategory', (categoryQuery) => {
-                categoryQuery.where('type', '!=', PROFILE_TYPE.SUPER_ADMIN)
+                categoryQuery.where('type', '!=', ProfileType.SUPER_ADMIN)
               })
             })
             .preload('profile', (profileQuery) => {

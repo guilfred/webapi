@@ -1,4 +1,4 @@
-import { PROFILE_TYPE } from '#utils/utils_types'
+import { ProfileType } from '#utils/utils_types'
 import { DbAccessTokensProvider } from '@adonisjs/auth/access_tokens'
 import { withAuthFinder } from '@adonisjs/auth/mixins/lucid'
 import { compose } from '@adonisjs/core/helpers'
@@ -54,15 +54,14 @@ export default class User extends compose(BaseModel, AuthFinder) {
   }
 
   get isAdmin(): boolean {
-    return [PROFILE_TYPE.SUPER_ADMIN, PROFILE_TYPE.ADMIN]
-      .includes(this.profile.profileCategory.type)
+    return [ProfileType.SUPER_ADMIN, ProfileType.ADMIN].includes(this.profile.profileCategory.type)
   }
 
   get isSuperAdmin(): boolean {
-    return this.profile?.profileCategory?.type === PROFILE_TYPE.SUPER_ADMIN
+    return this.profile?.profileCategory?.type === ProfileType.SUPER_ADMIN
   }
 
   get isLamba(): boolean {
-    return this.profile?.profileCategory?.type === PROFILE_TYPE.CLIENT
+    return this.profile?.profileCategory?.type === ProfileType.CLIENT
   }
 }

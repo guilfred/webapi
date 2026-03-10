@@ -18,7 +18,6 @@ export default class Project extends BaseModel {
   })
   declare tickets: HasMany<typeof Ticket>
 
-  
   @column({ columnName: 'profile_id' })
   declare profileID: number
 

@@ -1,8 +1,8 @@
+import ProfileCategory from '#models/profile_category'
+import Project from '#models/project'
+import User from '#models/user'
 import { BaseModel, belongsTo, column, hasMany } from '@adonisjs/lucid/orm'
 import type { BelongsTo, HasMany } from '@adonisjs/lucid/types/relations'
-import ProfileCategory from './profile_category.js'
-import Project from './project.js'
-import User from './user.js'
 
 export default class Profile extends BaseModel {
   @column({ isPrimary: true })

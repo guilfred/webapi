@@ -29,6 +29,13 @@ export default class AuthController {
     return response.json(this.presenter.toJSON(user))
   }
 
+  async login({ request, auth }: HttpContext) {
+    const { username: email, password } = await request.validateUsing(AuthenticationValidator)
+    const user = await User.verifyCredentials(email, password)
+
+    return await auth.use('jwt').generate(user)
+  }
+
   async currentUser({ response, auth }: HttpContext) {
     const user = auth.user
     if (!user) {

@@ -3,9 +3,9 @@ name: Tests
 on: [push, pull_request]
 
 jobs:
-  test:
+  unit-and-functional-tests:
     runs-on: ubuntu-latest
-    
+
     services:
       postgres:
         image: postgres:16-alpine
@@ -44,7 +44,7 @@ jobs:
         run: node ace migration:run --force
 
       - name: Run seeders
-        run: node ace db:seed  
+        run: node ace db:seed
 
       - name: Run tests
         run: npm test
